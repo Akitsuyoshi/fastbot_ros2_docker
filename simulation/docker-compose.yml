@@ -1,0 +1,18 @@
+version: '3'
+services:
+  fastbot-ros2-gazebo:
+    image: fastbot-ros2-gazebo
+    build:
+      context: ../..
+      dockerfile: fastbot_ros2_docker/simulation/fastbot-ros2-gazebo
+    container_name: fastbot-ros2-gazebo
+    # network_mode: host
+    environment:
+      - DISPLAY=${DISPLAY}
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - ROS_DOMAIN_ID=1
+      - GAZEBO_MODEL_PATH=/usr/share/gazebo-11/models:/.gazebo/models:/ros2_ws/install/fastbot_description/share
+      - GAZEBO_RESOURCE_PATH=/usr/share/gazebo-11:/ros2_ws/install/fastbot_description/share
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    command: bash -c "source /opt/ros/humble/setup.bash && source /ros2_ws/install/setup.bash && ros2 launch fastbot_gazebo one_fastbot_room.launch.py"
