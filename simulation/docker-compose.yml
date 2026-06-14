@@ -6,7 +6,6 @@ services:
       context: ../..
       dockerfile: fastbot_ros2_docker/simulation/Dockerfile.gazebo
     container_name: fastbot-ros2-gazebo
-    # network_mode: host
     environment:
       - DISPLAY=${DISPLAY}
       - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
@@ -25,7 +24,6 @@ services:
     container_name: fastbot-ros2-slam
     depends_on:
       - fastbot-ros2-gazebo
-    # network_mode: host
     environment:
       - DISPLAY=${DISPLAY}
       - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
@@ -33,3 +31,21 @@ services:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
     command: bash -c "source /opt/ros/humble/setup.bash && source /ros2_ws/install/setup.bash && ros2 launch fastbot_slam cartographer.launch.py"
+
+  fastbot-ros2-webapp:
+    image: fastbot-ros2-webapp
+    build:
+      context: ../../../../
+      dockerfile: ros2_ws/src/fastbot_ros2_docker/simulation/Dockerfile.webapp
+    container_name: fastbot-ros2-webapp
+    depends_on:
+      - fastbot-ros2-slam
+    environment:
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - ROS_DOMAIN_ID=1
+    # volumes:
+    #   - ../../../../webpage_ws/fastbot_webapp:/var/www/html
+    ports:
+      - "7000:80" # For Nginx Web UI to the host browser
+      - "9090:9090" # For the Rosbridge WebSocket connection
+      - "11315:11315" # For Web Video Server

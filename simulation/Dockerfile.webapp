@@ -1,0 +1,34 @@
+FROM ros:humble-ros-base
+
+# Exporting a variable to install pkgs without any interactive questions
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Installing nginx and ros 2 web bridging packages
+RUN apt-get update && apt-get install -y \
+    nginx \
+    python3-pip \
+    ros-humble-rosbridge-suite \
+    ros-humble-web-video-server \
+    ros-humble-rmw-cyclonedds-cpp \
+    python3-colcon-common-extensions \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copying the local entrypoint_web.sh file to /entrypoint_web.sh in the image
+COPY ./ros2_ws/src/fastbot_ros2_docker/simulation/entrypoint_web.sh /entrypoint_web.sh
+
+# Copying the local fastbot_webapp to /var/www/html in the image
+COPY ./webpage_ws/fastbot_webapp /var/www/html
+
+WORKDIR /ros2_ws/src
+COPY ./ros2_ws/src/tf2_web_republisher_py ./tf2_web_republisher_py
+
+# Build the python tf2_web_republisher package from source
+WORKDIR /ros2_ws
+RUN /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --symlink-install"
+RUN pip3 install pyquaternion
+
+# /bin/bash is the command we want to execute when running a docker container
+ENTRYPOINT ["/bin/bash"]
+
+# We want /bin/bash to execute our /entrypoint_web.sh when container starts
+CMD ["/entrypoint_web.sh"]
