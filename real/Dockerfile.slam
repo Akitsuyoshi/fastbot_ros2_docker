@@ -6,6 +6,7 @@ SHELL [ "/bin/bash" , "-c" ]
 
 # Install Gazebo 11 and other dependencies
 RUN apt-get update && apt-get install -y \
+  git \
   ros-humble-cartographer \
   ros-humble-cartographer-ros \
   ros-humble-nav2-map-server \
@@ -17,12 +18,13 @@ RUN apt-get update && apt-get install -y \
 # Create workspace and copy simulation repository
 WORKDIR /ros2_ws
 RUN mkdir -p src
-COPY fastbot/fastbot_slam      ./src/fastbot_slam
+WORKDIR /ros2_ws/src
+RUN git clone --branch cp22_real --single-branch https://github.com/Akitsuyoshi/fastbot_slam.git
 
 # Build the Colcon workspace and ensure it's sourced
 RUN source /opt/ros/humble/setup.bash \
  && cd /ros2_ws \
- && colcon build
+ && colcon build --symlink-install
 
 # Source the built workspace
 ENTRYPOINT ["/ros_entrypoint.sh"]

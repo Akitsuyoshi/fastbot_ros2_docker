@@ -1,10 +1,10 @@
 version: '3'
 services:
   fastbot-ros2-real:
-    image: akitsuyoshi/akitsuyoshi-cp22:fastbot-ros2-real
-    # build:
-    #   context: ../..
-    #   dockerfile: fastbot_ros2_docker/real/Dockerfile.real
+    # image: akitsuyoshi/akitsuyoshi-cp22:fastbot-ros2-real
+    build:
+      context: ../..
+      dockerfile: fastbot_ros2_docker/real/Dockerfile.real
     container_name: fastbot-ros2-real
     pull_policy: always
     privileged: true
@@ -22,9 +22,9 @@ services:
   
   fastbot-ros2-real-slam:
     image: akitsuyoshi/akitsuyoshi-cp22:fastbot-ros2-slam-real
-    # build:
-    #   context: ../..
-    #   dockerfile: fastbot_ros2_docker/real/Dockerfile.slam
+    build:
+      context: ../..
+      dockerfile: fastbot_ros2_docker/real/Dockerfile.slam
     container_name: fastbot-ros2-real-slam
     network_mode: host
     depends_on:
