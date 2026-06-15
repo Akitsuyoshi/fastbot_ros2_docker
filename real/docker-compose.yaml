@@ -12,7 +12,7 @@ services:
     environment:
       - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
       - ROS_DOMAIN_ID=1
-      - CYCLONEDDS_URI=/var/lib/theconstruct.rrl/cyclonedds.xml
+      - CYCLONEDDS_URI=/var/lib/theconstruct.rrl/cyclonedds_husarnet.xml
     volumes:
       - /var/lib/theconstruct.rrl/:/var/lib/theconstruct.rrl/
       - /dev:/dev
@@ -32,7 +32,7 @@ services:
     environment:
       - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
       - ROS_DOMAIN_ID=1
-      - CYCLONEDDS_URI=/var/lib/theconstruct.rrl/cyclonedds.xml
+      - CYCLONEDDS_URI=/var/lib/theconstruct.rrl/cyclonedds_husarnet.xml
     volumes:
       - /var/lib/theconstruct.rrl/:/var/lib/theconstruct.rrl/
     entrypoint: /ros_entrypoint.sh
