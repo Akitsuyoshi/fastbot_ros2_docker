@@ -1,0 +1,29 @@
+# Base image
+FROM ros:humble-ros-core
+
+# Change the default shell to Bash
+SHELL [ "/bin/bash" , "-c" ]
+
+# Install Gazebo 11 and other dependencies
+RUN apt-get update && apt-get install -y \
+  ros-humble-cartographer \
+  ros-humble-cartographer-ros \
+  ros-humble-nav2-map-server \
+  ros-humble-rmw-cyclonedds-cpp \
+  ros-humble-tf2-tools \
+  python3-colcon-common-extensions \
+  && rm -rf /var/lib/apt/lists/*
+
+# Create workspace and copy simulation repository
+WORKDIR /ros2_ws
+RUN mkdir -p src
+COPY fastbot/fastbot_slam      ./src/fastbot_slam
+
+# Build the Colcon workspace and ensure it's sourced
+RUN source /opt/ros/humble/setup.bash \
+ && cd /ros2_ws \
+ && colcon build
+
+# Source the built workspace
+ENTRYPOINT ["/ros_entrypoint.sh"]
+CMD ["bash"]
