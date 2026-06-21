@@ -2,29 +2,32 @@
 
 ## Overview
 
-This project provides a Docker-based environment for the FastBot robot in both simulation and real robot.
+Docker environment for running the FastBot robot in simulation and on the real robot.
 
-The simulation consists of three Docker containers:
+Simulation containers:
 
-* `fastbot-ros2-gazebo` – Gazebo simulation environment
-* `fastbot-ros2-slam` – SLAM and robot localization
-* `fastbot-ros2-webapp` – Web-based robot control and visualization
+- `fastbot-ros2-gazebo` — Gazebo simulation
+- `fastbot-ros2-slam` — SLAM and localization
+- `fastbot-ros2-webapp` — Web control interface
 
-The real consists of two Docker containers:
+Real robot containers:
 
-* `fastbot-ros2-real` – Real robot environment
-* `fastbot-ros2-real-slam` – SLAM and robot localization
+- `fastbot-ros2-real` — Robot drivers and ROS2 system
+- `fastbot-ros2-real-slam` — SLAM and localization
 
-**Note:** The `simulation` environment targets **Linux AMD64 (x86_64)** platforms, while the `real` FastBot robot environment targets **Linux ARM64 (aarch64)** platforms.
+> **Note:** Simulation uses **Linux AMD64 (x86_64)**, while the real FastBot robot uses **Linux ARM64 (aarch64)**.
+
 
 ## Prerequisites
 
-Before starting the `simulation`, ensure that:
+Simulation:
 
-* Docker and Docker Compose are installed
-* The graphical environment is available for Gazebo visualization
+- Docker and Docker Compose
+- Graphical environment for Gazebo
 
-Before deploying to the `real FastBot robot`, please refer to the prerequisites and hardware setup instructions in the FastBot repository:
+Real robot:
+
+Refer to the FastBot setup instructions:
 
 https://github.com/Akitsuyoshi/fastbot
 
@@ -64,31 +67,22 @@ docker-compose down
 
 ## Running real Fastbot robot
 
-Connect to Fastbot robot from `host`:
+Connect to the robot:
 
 ```bash
 ssh fastbot@fastbot.local
 ```
 
-Make a working directory for docker:
+Clone the repository:
 
 ```bash
 cd
 mkdir docker
 cd docker
-```
-
-Clone the repository into the working directory:
-
-```bash
 git clone https://github.com/Akitsuyoshi/fastbot_ros2_docker.git
+cd fastbot_ros2_docker/real
 ```
 
-Navigate to the real directory:
-
-```bash
-cd fastbot_ros2_docker/real/
-```
 Start all required containers:
 
 ```bash
@@ -108,11 +102,10 @@ akitsuyoshi/akitsuyoshi-cp22:fastbot-ros2-real
 akitsuyoshi/akitsuyoshi-cp22:fastbot-ros2-slam-real
 ```
 
-Check the ros2 topics:
+Check ros2 topics:
 
 ```bash
-cd
-source docker/fastbot_ros2_docker/real/ros_entrypoint.sh
+source ~/docker/fastbot_ros2_docker/real/ros_entrypoint.sh
 ros2 topic list
 ```
 
@@ -140,42 +133,16 @@ docker-compose down
 
 ## Validating the robot systems in rosject
 
-Check rosject is conneted to physical robot, fastbot.
-
-Connect to Fastbot robot from `rosject`:
+From the rosject environment, check ros2 topics:
 
 ```bash
-ssh fastbot@fastbot.local
-```
-
-Check all the robot systems have been started properly:
-
-```bash
-cd
-source docker/fastbot_ros2_docker/real/ros_entrypoint.sh
+source ~/docker/fastbot_ros2_docker/real/ros_entrypoint.sh
 ros2 topic list
 ```
 
-Expected output will be:
-
-```text
-/fastbot/cmd_vel
-/fastbot/encoder_vals
-/fastbot/joint_states
-/fastbot/motor_vels
-/fastbot/odom
-/fastbot/scan
-/fastbot_camera/camera_info
-/fastbot_camera/image_raw
-/tf
-/tf_static
-...
-```
-
-Run rviz2 to show generated map:
+Run rviz2 to visualize the generated map:
 
 ```bash
-cd
-source docker/fastbot_ros2_docker/real/ros_entrypoint.sh
-rviz2 -d docker/fastbot_ros2_docker/real/mapping.rviz
+source ~/docker/fastbot_ros2_docker/real/ros_entrypoint.sh
+rviz2 -d ~/docker/fastbot_ros2_docker/real/mapping.rviz
 ```
