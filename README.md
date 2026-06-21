@@ -45,7 +45,7 @@ Start all required containers:
 docker-compose up
 ```
 
-Check that all required containers are running:
+Check the containers are running:
 
 ```bash
 docker ps --format "{{.Image}}"
@@ -125,6 +125,13 @@ Expected output will be:
 ...
 ```
 
+Move the robot via teleop:
+
+```
+source ~/docker/fastbot_ros2_docker/real/ros_entrypoint.sh
+ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args --remap cmd_vel:=/fastbot/cmd_vel
+```
+
 Stop the containers:
 
 ```bash
@@ -145,4 +152,21 @@ Run rviz2 to visualize the generated map:
 ```bash
 source ~/docker/fastbot_ros2_docker/real/ros_entrypoint.sh
 rviz2 -d ~/docker/fastbot_ros2_docker/real/mapping.rviz
+```
+
+## Automatic Startup
+
+To automatically start Docker containers after robot power-on, install the systemd service:
+
+```bash
+sudo cp ~/docker/fastbot_ros2_docker/real/fastbot_compose.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable fastbot_compose.service
+sudo systemctl start fastbot_compose.service
+```
+
+Check status:
+
+```bash
+systemctl status fastbot_compose.service
 ```
